@@ -1,0 +1,4 @@
+﻿{
+  "testmode": true,
+  "command": "thunderbird -compose \"to='%%EmailTo%%', cc='', subject='%%subject%%', body='%%body%%',attachment='%%FullPath%%,%%EmailAttach%%'\""
+}

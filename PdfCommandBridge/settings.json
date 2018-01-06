@@ -1,0 +1,5 @@
+﻿{
+  "testmode": true,
+  "command": "thunderbird",
+  "arguments": "-compose \"to='%%EmailTo%%', cc='', subject='%%subject%%', body='%%body%%',attachment='%%FullPath%%,%%EmailAttach%%'\""
+}

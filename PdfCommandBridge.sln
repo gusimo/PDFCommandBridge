@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfCommandBridge", "PdfCommandBridge\PdfCommandBridge.csproj", "{FD286E51-D322-45E5-9582-5A4847D2220F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD286E51-D322-45E5-9582-5A4847D2220F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD286E51-D322-45E5-9582-5A4847D2220F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD286E51-D322-45E5-9582-5A4847D2220F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD286E51-D322-45E5-9582-5A4847D2220F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C1385200-4E49-4A43-800E-84F181AEC7B1}
+	EndGlobalSection
+EndGlobal

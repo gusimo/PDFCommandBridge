@@ -14,30 +14,6 @@ namespace PdfCommandBridge
     {
         static void Main(string[] args)
         {
-            //check if there is an argument.
-            if(args.Length < 1)
-            {
-                Console.WriteLine("Please provide a pdf file as parameter");
-                Environment.Exit(2);
-            }
-
-            string filename = args[0];
-            if (!File.Exists(filename))
-            {
-                Console.WriteLine("The file provided does not exist");
-                Environment.Exit(1);
-            }
-
-            string parsed = ReadPdfFile(filename);
-
-            if (string.IsNullOrEmpty(parsed))
-            {
-                Console.WriteLine("No Text was extracted");
-                Environment.Exit(3);
-            }
-
-            //Console.WriteLine("extracted text:");
-            //Console.WriteLine(parsed);
 
             //Read Json config
             Settings settings = new Settings()
@@ -54,9 +30,64 @@ namespace PdfCommandBridge
             }
             else
             {
-                File.WriteAllText(@"settings.json",JsonConvert.SerializeObject(settings));
+                File.WriteAllText(@"settings.json", JsonConvert.SerializeObject(settings));
+                if (settings.testmode)
+                {
+                    System.Windows.Forms.MessageBox.Show("[TESTMODE] PdfCommandBridge Settings created in " + Environment.CurrentDirectory);
+                }
             }
-            
+
+            //check if there is an argument.
+            if (args.Length < 1)
+            {
+                Console.WriteLine("Please provide a pdf file as parameter");
+                if (settings.testmode)
+                {
+                    System.Windows.Forms.MessageBox.Show("[TESTMODE] Please provide a pdf file as parameter");
+                }
+                Environment.Exit(2);
+            }
+
+            var Files = EvaluateArgs(args);
+
+
+            if (Files.Count < 1)
+            {
+                Console.WriteLine("The files provided do not exist");
+                if (settings.testmode)
+                {
+                    System.Windows.Forms.MessageBox.Show("[TESTMODE] The files provided do not exist. Check Args: " + String.Join(" ",args));
+                }
+                Environment.Exit(1);
+            }
+
+            //Okay, we are prepared to parse many files, but that does not make sense at all.
+            if (Files.Count > 1)
+            {
+                Console.WriteLine("Please provide only one file at once");
+                if (settings.testmode)
+                {
+                    System.Windows.Forms.MessageBox.Show("[TESTMODE] Please provide only one file at once. Check Args: " + String.Join(" ", args));
+                }
+                Environment.Exit(1);
+            }
+
+            var filename = Files[0];
+
+            string parsed = ReadPdfFile(filename);
+
+            if (string.IsNullOrEmpty(parsed))
+            {
+                Console.WriteLine("No Text was extracted");
+                if (settings.testmode)
+                {
+                    System.Windows.Forms.MessageBox.Show("[TESTMODE] No Text was extracted");
+                }
+                Environment.Exit(3);
+            }
+
+            //Console.WriteLine("extracted text:");
+            //Console.WriteLine(parsed);            
 
             var extracted = ExtractControlstrings(parsed);
 
@@ -157,6 +188,56 @@ namespace PdfCommandBridge
                 }
             }
                 return result;
+        }
+
+        static List<string> EvaluateArgs(string[] args)
+        {
+            //use args: in general each arg should be one file, if spaces in path, then it should be quoted
+            var files = new List<string>();
+
+            string concatenatedArgs = ""; //failover if a tool might pass a filename with spaces unquoted
+
+            foreach (var arg in args)
+            {
+                if (File.Exists(arg))
+                {
+                    files.Add(arg);
+                }
+                else
+                {
+                    char splitter = 'X';
+                    splitter = arg.Contains(",") ? ',' : splitter;
+                    splitter = arg.Contains(";") ? ';' : splitter;
+
+                    if (splitter != 'X')
+                    {
+                        var candidates = arg.Split(splitter);
+                        foreach (var candidate in candidates)
+                        {
+                            var filecandidate = candidate.Trim();
+                            if (File.Exists(filecandidate))
+                            {
+                                files.Add(filecandidate);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        concatenatedArgs += arg + " ";
+                    }
+                }
+            }
+
+            if (files.Count < 1)
+            {
+                concatenatedArgs = concatenatedArgs.Trim();
+                if (File.Exists(concatenatedArgs))
+                {
+                    files.Add(concatenatedArgs);
+                }
+            }
+
+            return files;
         }
     }
 }
